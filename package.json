@@ -1,0 +1,21 @@
+{
+  "name": "credits",
+  "version": "1.0.0",
+  "description": "Globális Discord bot kreditrendszerrel (slash parancsok, több szerveren is működik)",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "deploy": "node src/deploy-commands.js",
+    "dev": "node --watch src/index.js",
+    "check": "node --check src/index.js && node --check src/deploy-commands.js && node src/lib/selftest.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.27.0",
+    "dotenv": "^18.0.5"
+  }
+}

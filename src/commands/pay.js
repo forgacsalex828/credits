@@ -1,0 +1,27 @@
+import { SlashCommandBuilder, MessageFlags } from 'discord.js';
+import { credits } from '../lib/format.js';
+
+export default {
+  data: new SlashCommandBuilder()
+    .setName('pay')
+    .setDescription('Kredit küldése másik felhasználónak')
+    .addUserOption((o) => o.setName('user').setDescription('Címzett').setRequired(true))
+    .addIntegerOption((o) => o.setName('amount').setDescription('Összeg').setMinValue(1).setRequired(true)),
+  async execute(interaction) {
+    const target = interaction.options.getUser('user', true);
+    const amount = interaction.options.getInteger('amount', true);
+    if (target.bot) {
+      await interaction.reply({ content: '🤖 Botnak nem küldhetsz kreditet.', flags: MessageFlags.Ephemeral });
+      return;
+    }
+    try {
+      const result = interaction.client.store.transfer(interaction.user.id, target.id, amount);
+      await interaction.reply(
+        `💸 ${interaction.user} küldött **${credits(amount)}**-et ${target} részére.\n` +
+          `Egyenleged: **${credits(result.from)}**`,
+      );
+    } catch (err) {
+      await interaction.reply({ content: `❌ ${err.message}`, flags: MessageFlags.Ephemeral });
+    }
+  },
+};
