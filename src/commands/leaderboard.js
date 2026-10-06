@@ -13,7 +13,7 @@ export default {
     }
     const lines = top.map((u, i) => `${MEDALS[i] ?? `**${i + 1}.**`} <@${u.id}> — ${credits(u.balance)}`);
     const embed = new EmbedBuilder()
-      .setTitle('🏆 Globális toplista')
+      .setTitle('🏆 Meteor globális toplista')
       .setDescription(lines.join('\n'))
       .setColor(0xf1c40f);
     await interaction.reply({ embeds: [embed], allowedMentions: { parse: [] } });

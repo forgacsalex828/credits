@@ -1,7 +1,7 @@
 {
-  "name": "credits",
+  "name": "meteor-bot",
   "version": "1.0.0",
-  "description": "Globális Discord bot kreditrendszerrel (slash parancsok, több szerveren is működik)",
+  "description": "Meteor bot – globális Discord bot kreditrendszerrel (slash parancsok, több szerveren is működik)",
   "main": "src/index.js",
   "type": "module",
   "scripts": {

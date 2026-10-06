@@ -5,6 +5,6 @@ export default {
   async execute(interaction) {
     const sent = await interaction.reply({ content: 'Pingelés...', withResponse: true });
     const roundtrip = sent.resource.message.createdTimestamp - interaction.createdTimestamp;
-    await interaction.editReply(`🏓 Pong! Válaszidő: **${roundtrip} ms**, WebSocket: **${interaction.client.ws.ping} ms**`);
+    await interaction.editReply(`☄️ Meteor pong! Válaszidő: **${roundtrip} ms**, WebSocket: **${interaction.client.ws.ping} ms**`);
   },
 };

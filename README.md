@@ -1,4 +1,4 @@
-# Credits – globális Discord bot
+# Meteor bot – globális Discord bot kreditrendszerrel
 
 Node.js + discord.js alapú Discord bot **globális slash parancsokkal**. Egyszer regisztrálod, és minden szerveren működik, ahová meghívod. A kreditek is globálisak: egy felhasználó egyenlege minden szerveren ugyanaz.
 
@@ -15,6 +15,8 @@ Node.js + discord.js alapú Discord bot **globális slash parancsokkal**. Egysze
 | `/admin add/remove <user> <amount>` | Kreditkezelés (csak adminisztrátoroknak) |
 
 ## Beüzemelés
+
+A Discord Developer Portalon az alkalmazás és a bot nevét is állítsd **Meteor bot**-ra, hogy ezen a néven jelenjen meg a szervereken.
 
 1. **Bot létrehozása**: [Discord Developer Portal](https://discord.com/developers/applications) → *New Application* → *Bot* fül → *Reset Token*, és másold ki a tokent. Az *Application ID* a *General Information* oldalon van.
 2. **Beállítás**:
@@ -64,5 +66,5 @@ src/
 Hosztolható bármilyen Node.js-t támogató gépen vagy szolgáltatón (Railway, Render, VPS, Raspberry Pi). Példa `pm2`-vel:
 ```bash
 npm i -g pm2
-pm2 start src/index.js --name credits-bot
+pm2 start src/index.js --name meteor-bot
 ```

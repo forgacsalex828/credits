@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import { BOT_NAME, BOT_EMOJI, BOT_COLOR } from '../lib/branding.js';
 
 export default {
   data: new SlashCommandBuilder().setName('help').setDescription('Kilistázza az elérhető parancsokat'),
@@ -7,10 +8,10 @@ export default {
       .map((c) => `**/${c.data.name}** — ${c.data.description}`)
       .sort();
     const embed = new EmbedBuilder()
-      .setTitle('📖 Parancsok')
+      .setTitle(`${BOT_EMOJI} ${BOT_NAME} – parancsok`)
       .setDescription(lines.join('\n'))
-      .setFooter({ text: `Aktív ${interaction.client.guilds.cache.size} szerveren` })
-      .setColor(0x5865f2);
+      .setFooter({ text: `${BOT_NAME} • aktív ${interaction.client.guilds.cache.size} szerveren` })
+      .setColor(BOT_COLOR);
     await interaction.reply({ embeds: [embed] });
   },
 };
