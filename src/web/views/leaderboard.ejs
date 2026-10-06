@@ -1,0 +1,17 @@
+<%- include('partials/header') %>
+<h1>🏆 Globális toplista</h1>
+<p class="muted">A 50 leggazdagabb felhasználó, minden szerveren összesítve.</p>
+<table class="table">
+  <thead><tr><th>#</th><th>Felhasználó</th><th class="right">Kredit</th></tr></thead>
+  <tbody>
+  <% top.forEach((u, i) => { const info = users.get(u.id); %>
+    <tr>
+      <td><%= ['🥇','🥈','🥉'][i] || (i + 1) %></td>
+      <td class="user"><% if (info?.avatar) { %><img src="<%= info.avatar %>" alt="" width="28" height="28"><% } %> <%= info?.name ?? u.id %></td>
+      <td class="right"><b><%= u.balance.toLocaleString('hu-HU') %></b></td>
+    </tr>
+  <% }) %>
+  <% if (!top.length) { %><tr><td colspan="3" class="muted">Még senkinek nincs kreditje.</td></tr><% } %>
+  </tbody>
+</table>
+<%- include('partials/footer') %>

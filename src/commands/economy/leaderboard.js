@@ -1,12 +1,13 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
-import { credits } from '../lib/format.js';
+import { credits } from '../../lib/format.js';
+import { config } from '../../lib/config.js';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 
 export default {
   data: new SlashCommandBuilder().setName('leaderboard').setDescription('Globális toplista: a 10 leggazdagabb felhasználó'),
   async execute(interaction) {
-    const top = interaction.client.store.top(10);
+    const top = interaction.client.db.top(10);
     if (top.length === 0) {
       await interaction.reply('Még senkinek nincs kreditje. Próbáld a `/daily` parancsot!');
       return;
@@ -16,6 +17,7 @@ export default {
       .setTitle('🏆 Meteor globális toplista')
       .setDescription(lines.join('\n'))
       .setColor(0xf1c40f);
+    if (config.web.enabled) embed.setFooter({ text: `Teljes lista: ${config.web.baseUrl}/leaderboard` });
     await interaction.reply({ embeds: [embed], allowedMentions: { parse: [] } });
   },
 };

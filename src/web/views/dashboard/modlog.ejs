@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+<h1>🛡️ <%= guild.name %> – moderációs napló</h1>
+<p class="muted"><a href="/dashboard/<%= guild.id %>">← Beállítások</a></p>
+<table class="table">
+  <thead><tr><th>Idő</th><th>Művelet</th><th>Érintett</th><th>Moderátor</th><th>Indok</th></tr></thead>
+  <tbody>
+  <% for (const r of rows) { %>
+    <tr>
+      <td><time datetime="<%= new Date(r.created_at).toISOString() %>"><%= new Date(r.created_at).toLocaleString('hu-HU') %></time></td>
+      <td><span class="tag tag-<%= r.action %>"><%= r.action %></span></td>
+      <td><code><%= r.user_id || '—' %></code></td>
+      <td><code><%= r.moderator_id %></code></td>
+      <td><%= r.reason || '' %></td>
+    </tr>
+  <% } %>
+  <% if (!rows.length) { %><tr><td colspan="5" class="muted">Még nincs bejegyzés.</td></tr><% } %>
+  </tbody>
+</table>
+<%- include('../partials/footer') %>

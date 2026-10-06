@@ -6,6 +6,8 @@ export default {
   once: true,
   execute(client) {
     console.log(`☄️  ${BOT_NAME} elindult – bejelentkezve: ${client.user.tag} — ${client.guilds.cache.size} szerveren aktív`);
-    client.user.setActivity({ name: '/help | Meteor bot', type: ActivityType.Watching });
+    const update = () => client.user.setActivity({ name: `/help | ${client.guilds.cache.size} szerver`, type: ActivityType.Watching });
+    update();
+    setInterval(update, 10 * 60_000).unref();
   },
 };

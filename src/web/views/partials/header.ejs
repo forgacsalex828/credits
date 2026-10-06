@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · <%= botName %></title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☄️</text></svg>">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="/">☄️ <%= botName %></a>
+  <nav>
+    <a href="/commands" class="<%= path === '/commands' ? 'active' : '' %>">Parancsok</a>
+    <a href="/leaderboard" class="<%= path === '/leaderboard' ? 'active' : '' %>">Toplista</a>
+    <a href="/dashboard" class="<%= path.startsWith('/dashboard') ? 'active' : '' %>">Vezérlőpult</a>
+    <% if (user) { %>
+      <form method="post" action="/logout" class="inline">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <button class="userchip" type="submit" title="Kijelentkezés">
+          <img src="<%= avatar %>" alt="" width="24" height="24"> <%= user.global_name || user.username %> ⏏
+        </button>
+      </form>
+    <% } else { %>
+      <a href="/login" class="btn small">Bejelentkezés</a>
+    <% } %>
+  </nav>
+</header>
+<main>

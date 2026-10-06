@@ -1,0 +1,60 @@
+<%- include('../partials/header') %>
+<% const chk = (v) => v ? 'checked' : ''; %>
+<% const channelSelect = (name, current) => { let h = `<select name="${name}"><option value="">— nincs —</option>`; for (const c of channels) h += `<option value="${c.id}" ${c.id === current ? 'selected' : ''}># ${c.name}</option>`; return h + '</select>'; }; %>
+<div class="guildhead">
+  <% if (icon) { %><img src="<%= icon %>" alt="" width="56" height="56"><% } %>
+  <div><h1><%= guild.name %></h1><p class="muted"><%= guild.memberCount %> tag · <a href="/dashboard/<%= guild.id %>/modlog">Moderációs napló</a> · <a href="/dashboard/<%= guild.id %>/levels">Szintek</a> · <a href="/dashboard">Vissza</a></p></div>
+</div>
+<% if (saved) { %><div class="flash">✅ Beállítások elmentve.</div><% } %>
+<form method="post" action="/dashboard/<%= guild.id %>" class="settings">
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+
+  <fieldset>
+    <legend>📋 Általános</legend>
+    <label>Moderációs log csatorna <%- channelSelect('log_channel', settings.log_channel) %></label>
+    <label>Üdvözlő csatorna <%- channelSelect('welcome_channel', settings.welcome_channel) %></label>
+    <label>Üdvözlő üzenet <small>változók: {user} {server} {count}</small>
+      <textarea name="welcome_message" maxlength="500" rows="2" placeholder="Üdv a szerveren, {user}! Te vagy a {count}. tag. 🎉"><%= settings.welcome_message || '' %></textarea></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>🛡️ Anti-spam</legend>
+    <label class="row"><input type="checkbox" name="antispam" <%= chk(settings.antispam) %>> Bekapcsolva</label>
+    <div class="cols">
+      <label>Üzenetek <input type="number" name="antispam_limit" min="3" max="20" value="<%= settings.antispam_limit %>"></label>
+      <label>Időablak (mp) <input type="number" name="antispam_window" min="2" max="30" value="<%= settings.antispam_window %>"></label>
+      <label>Timeout (mp) <input type="number" name="antispam_timeout" min="60" max="86400" value="<%= settings.antispam_timeout %>"></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>🚫 Szűrők</legend>
+    <label class="row"><input type="checkbox" name="antiinvite" <%= chk(settings.antiinvite) %>> Discord meghívók törlése</label>
+    <label class="row"><input type="checkbox" name="antilink" <%= chk(settings.antilink) %>> Minden link törlése</label>
+    <label>Tiltott szavak <small>vesszővel vagy soronként, max 200</small>
+      <textarea name="badwords" rows="3"><%= settings.badwords.join(', ') %></textarea></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>🚨 Anti-raid</legend>
+    <label class="row"><input type="checkbox" name="antiraid" <%= chk(settings.antiraid) %>> Bekapcsolva</label>
+    <div class="cols">
+      <label>Belépések <input type="number" name="antiraid_joins" min="3" max="50" value="<%= settings.antiraid_joins %>"></label>
+      <label>Időablak (mp) <input type="number" name="antiraid_window" min="5" max="120" value="<%= settings.antiraid_window %>"></label>
+      <label>Művelet
+        <select name="antiraid_action">
+          <% for (const [v, l] of [['kick','Kirúgás'],['ban','Kitiltás'],['none','Csak naplózás']]) { %><option value="<%= v %>" <%= settings.antiraid_action === v ? 'selected' : '' %>><%= l %></option><% } %>
+        </select></label>
+      <label>Min. fiókkor (nap, 0 = ki) <input type="number" name="min_account_age" min="0" max="365" value="<%= settings.min_account_age %>"></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>⭐ Szintrendszer</legend>
+    <label class="row"><input type="checkbox" name="xp_enabled" <%= chk(settings.xp_enabled) %>> Bekapcsolva</label>
+    <label>Szintlépés üzenetek csatornája <small>üres = ahol a felhasználó írt</small> <%- channelSelect('levelup_channel', settings.levelup_channel) %></label>
+  </fieldset>
+
+  <button class="btn" type="submit">Mentés</button>
+</form>
+<%- include('../partials/footer') %>

@@ -1,0 +1,24 @@
+<%- include('partials/header') %>
+<section class="hero">
+  <h1>☄️ Meteor bot</h1>
+  <p>Globális Discord bot kreditrendszerrel, szintekkel, moderációval és szervervédelemmel. Egyszer meghívod, minden szerveren működik.</p>
+  <div class="actions">
+    <a class="btn" href="<%= invite %>">Meghívás a szerveremre</a>
+    <a class="btn ghost" href="/dashboard">Vezérlőpult</a>
+  </div>
+</section>
+<section class="stats">
+  <div class="stat"><b><%= stats.guilds.toLocaleString('hu-HU') %></b><span>szerver</span></div>
+  <div class="stat"><b><%= stats.members.toLocaleString('hu-HU') %></b><span>tag elérve</span></div>
+  <div class="stat"><b><%= stats.users.toLocaleString('hu-HU') %></b><span>kreditfiók</span></div>
+  <div class="stat"><b><%= stats.credits.toLocaleString('hu-HU') %></b><span>kredit forgalomban</span></div>
+</section>
+<section class="grid">
+  <div class="card"><h3>💰 Globális gazdaság</h3><p>Napi jutalom, munka, utalás, bolt, nyerőgép és coinflip. Az egyenleg minden szerveren közös.</p></div>
+  <div class="card"><h3>🛡️ Védelem</h3><p>Anti-spam automatikus timeouttal, anti-raid tömeges belépés ellen, meghívó-, link- és szószűrő, fiókkor-ellenőrzés.</p></div>
+  <div class="card"><h3>⚖️ Moderáció</h3><p>Ban, kick, timeout, figyelmeztetések automatikus büntetéssel, purge, csatornazár és teljes moderációs napló.</p></div>
+  <div class="card"><h3>⭐ Szintrendszer</h3><p>XP az üzenetekért, szintlépés-értesítés, szerverenkénti toplista.</p></div>
+  <div class="card"><h3>🌐 Webes vezérlőpult</h3><p>Discord-bejelentkezéssel minden beállítás böngészőből állítható, a napló és a szintek megtekinthetők.</p></div>
+  <div class="card"><h3>🔒 Biztonság</h3><p>CSRF-védelem, rate limit, biztonsági fejlécek, jogosultság-ellenőrzés minden moderációs műveletnél.</p></div>
+</section>
+<%- include('partials/footer') %>

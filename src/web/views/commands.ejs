@@ -1,0 +1,16 @@
+<%- include('partials/header') %>
+<h1>📖 Parancsok</h1>
+<% const names = { economy: '💰 Gazdaság', moderation: '🛡️ Moderáció', config: '⚙️ Beállítások', utility: '🔧 Egyéb' }; %>
+<% for (const key of ['economy','moderation','config','utility']) { if (!groups[key]) continue; %>
+  <h2><%= names[key] %></h2>
+  <div class="cmdlist">
+  <% for (const c of groups[key]) { %>
+    <div class="cmd"><code>/<%= c.name %></code><span><%= c.description %></span>
+      <% const subs = (c.options || []).filter(o => o.type === 1); if (subs.length) { %>
+        <small><%= subs.map(s => s.name).join(' · ') %></small>
+      <% } %>
+    </div>
+  <% } %>
+  </div>
+<% } %>
+<%- include('partials/footer') %>

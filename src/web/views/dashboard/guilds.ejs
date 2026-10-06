@@ -1,0 +1,18 @@
+<%- include('../partials/header') %>
+<h1>Vezérlőpult</h1>
+<p class="muted">Azok a szerverek, ahol van „Szerver kezelése” jogod.</p>
+<div class="grid">
+<% for (const g of guilds) { %>
+  <div class="card guild">
+    <% if (g.icon) { %><img src="<%= g.icon %>" alt="" width="48" height="48"><% } else { %><div class="icon-ph"><%= g.name.slice(0,1) %></div><% } %>
+    <h3><%= g.name %></h3>
+    <% if (g.hasBot) { %>
+      <a class="btn small" href="/dashboard/<%= g.id %>">Beállítások</a>
+    <% } else { %>
+      <a class="btn small ghost" href="<%= invite %>&guild_id=<%= g.id %>">Bot meghívása</a>
+    <% } %>
+  </div>
+<% } %>
+<% if (!guilds.length) { %><p>Nincs olyan szerver, amit kezelhetnél.</p><% } %>
+</div>
+<%- include('../partials/footer') %>

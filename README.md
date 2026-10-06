@@ -1,70 +1,106 @@
-# Meteor bot – globális Discord bot kreditrendszerrel
+# ☄️ Meteor bot
 
-Node.js + discord.js alapú Discord bot **globális slash parancsokkal**. Egyszer regisztrálod, és minden szerveren működik, ahová meghívod. A kreditek is globálisak: egy felhasználó egyenlege minden szerveren ugyanaz.
+Teljes értékű, **globális** Discord bot: egyszer regisztrálod, minden szerveren működik, ahová meghívják.
 
-## Parancsok
+- 💰 **Globális gazdaság** – a kreditegyenleg minden szerveren közös: `/daily`, `/work`, `/pay`, `/shop`, `/buy`, `/inventory`, `/coinflip`, `/slots`, `/history`, `/leaderboard`
+- 🛡️ **Szervervédelem** – anti-spam automatikus timeouttal, anti-raid (tömeges belépés), meghívó-/link-/szószűrő, minimum fiókkor
+- ⚖️ **Moderáció** – `/ban`, `/unban`, `/kick`, `/timeout`, `/untimeout`, `/warn` (3. figyelmeztetés → 1 óra timeout, 5. → kick), `/warnings`, `/purge`, `/lock`, `/modlog`, log csatorna
+- ⭐ **Szintrendszer** – XP az üzenetekért, szintlépés-értesítés, `/rank`, `/levels`
+- 👋 **Üdvözlő üzenet** – testreszabható, `{user} {server} {count}` változókkal
+- 🌐 **Weboldal + vezérlőpult** – Discord-bejelentkezéssel minden beállítás böngészőből, moderációs napló, szintek, nyilvános toplista, JSON API
+- 🗄️ **SQLite adatbázis** – minden adat egy fájlban (`data/meteor.sqlite`), WAL móddal, tranzakciókkal
+- 🔒 **Biztonság** – CSRF-védelem, rate limit, helmet fejlécek, session rotáció, jogosultság-ellenőrzés minden moderációs műveletnél, `/admin` csak a bot tulajdonosának
 
-| Parancs | Leírás |
+## Parancsok (30)
+
+| Kategória | Parancsok |
 |---|---|
-| `/ping` | Késleltetés mérése |
-| `/help` | Parancslista |
-| `/balance [user]` | Saját vagy másik felhasználó egyenlege |
-| `/daily` | Napi kreditjutalom (24 óránként) |
-| `/pay <user> <amount>` | Kredit küldése |
-| `/leaderboard` | Globális top 10 |
-| `/admin add/remove <user> <amount>` | Kreditkezelés (csak adminisztrátoroknak) |
+| 💰 Gazdaság | `balance` `daily` `work` `pay` `shop` `buy` `inventory` `history` `coinflip` `slots` `leaderboard` `admin` |
+| 🛡️ Moderáció | `ban` `unban` `kick` `timeout` `untimeout` `warn` `warnings` `purge` `lock` `modlog` |
+| ⚙️ Beállítások | `setup view/logchannel/welcome/antispam/filters/badwords/antiraid/xp` |
+| 🔧 Egyéb | `ping` `help` `userinfo` `serverinfo` `rank` `levels` `dashboard` |
 
 ## Beüzemelés
 
-A Discord Developer Portalon az alkalmazás és a bot nevét is állítsd **Meteor bot**-ra, hogy ezen a néven jelenjen meg a szervereken.
+### 1. Discord alkalmazás
+1. [Discord Developer Portal](https://discord.com/developers/applications) → **New Application** → nevezd el: *Meteor bot*.
+2. **Bot** fül → **Reset Token** → másold ki (`DISCORD_TOKEN`).
+3. Ugyanitt a **Privileged Gateway Intents** alatt kapcsold be: **Server Members Intent** és **Message Content Intent** (ezek nélkül az anti-spam, a szűrők, az XP és az anti-raid nem működik).
+4. **General Information** → **Application ID** (`CLIENT_ID`).
+5. **OAuth2** → **Client Secret** → Reset (`CLIENT_SECRET`), és a **Redirects** listához add hozzá: `<BASE_URL>/callback` (pl. `http://localhost:3000/callback`).
 
-1. **Bot létrehozása**: [Discord Developer Portal](https://discord.com/developers/applications) → *New Application* → *Bot* fül → *Reset Token*, és másold ki a tokent. Az *Application ID* a *General Information* oldalon van.
-2. **Beállítás**:
-   ```bash
-   cp .env.example .env
-   # töltsd ki a DISCORD_TOKEN és CLIENT_ID értékeket
-   npm install
-   ```
-3. **Parancsok regisztrálása** (egyszer, illetve minden parancsmódosítás után):
-   ```bash
-   npm run deploy
-   ```
-   `GUILD_ID` nélkül globálisan regisztrál (minden szerverre, kb. 1 óra alatt frissül). Teszteléshez add meg a `GUILD_ID`-t a `.env`-ben, ekkor azonnal megjelennek azon a szerveren.
-4. **Indítás**:
-   ```bash
-   npm start
-   ```
-5. **Meghívás szerverre**: Developer Portal → *OAuth2* → *URL Generator* → pipáld be a `bot` és `applications.commands` scope-ot, a jogok közül elég a *Send Messages* és *Embed Links*. A kapott linkkel bárki meghívhatja a botot a saját szerverére.
+### 2. Telepítés
+```bash
+npm install
+cp .env.example .env
+# töltsd ki: DISCORD_TOKEN, CLIENT_ID, CLIENT_SECRET, OWNER_IDS, SESSION_SECRET
+# SESSION_SECRET generálása: openssl rand -hex 32
+```
+
+### 3. Parancsok regisztrálása és indítás
+```bash
+npm run deploy   # globálisan (GUILD_ID nélkül) – kb. 1 órán belül jelenik meg minden szerveren
+npm start
+```
+Teszteléshez add meg a `GUILD_ID`-t a `.env`-ben, így a parancsok azonnal megjelennek azon a szerveren.
+
+### 4. Meghívás
+A weboldal főoldalán a **Meghívás** gomb a megfelelő jogokkal generált linket adja. Kézzel: OAuth2 → URL Generator → `bot` + `applications.commands` scope, jogok: Kick, Ban, Manage Channels, Manage Messages, Moderate Members, Send Messages, Embed Links, Read Message History.
+
+### 5. Weboldal
+Alapból a `http://localhost:3000` címen fut. Nyilvános címhez állítsd a `BASE_URL`-t (és a Discord Redirects listát), reverse proxy mögött `TRUST_PROXY=true`. Kikapcsolás: `WEB_ENABLED=false`.
+
+| Útvonal | Leírás |
+|---|---|
+| `/` | Főoldal, statisztika, meghívó |
+| `/commands` | Parancslista |
+| `/leaderboard` | Globális top 50 |
+| `/dashboard` | Szerverek, ahol van „Szerver kezelése” jogod |
+| `/dashboard/:id` | Beállítások szerkesztése |
+| `/dashboard/:id/modlog`, `/levels` | Napló, szintek |
+| `/api/stats`, `/api/leaderboard`, `/health` | JSON |
 
 ## Ellenőrzés token nélkül
-
 ```bash
 npm run check
 ```
-Szintaxisellenőrzés, a kreditrendszer egységtesztje és a parancsok betöltése.
+Szintaxisellenőrzés, az adatbázis-réteg egységtesztje (kreditek, bolt, beállítások, figyelmeztetések, XP, sessionök), a parancsok betöltése és a weboldal smoke-tesztje (biztonsági fejlécek, CSRF, átirányítások, API).
 
 ## Szerkezet
-
 ```
 src/
-  index.js            # belépési pont, kliens + eseménykezelők
-  deploy-commands.js  # slash parancsok regisztrálása (globális vagy guild)
-  commands/           # egy fájl = egy parancs ({ data, execute })
-  events/             # Discord események (ready, interactionCreate, guildCreate)
+  index.js              # belépési pont: kliens, intents, események, web indítása
+  deploy-commands.js    # slash parancsok regisztrálása (globális vagy guild)
+  commands/
+    economy/            # balance, daily, work, pay, shop, buy, inventory, history, coinflip, slots, leaderboard, admin
+    moderation/         # ban, unban, kick, timeout, untimeout, warn, warnings, purge, lock, modlog
+    config/setup.js     # szerverbeállítások Discordból
+    utility/            # ping, help, userinfo, serverinfo, rank, levels, dashboard
+  events/               # ready, interactionCreate (cooldown, autocomplete), guildCreate, messageCreate, guildMemberAdd
+  protection/           # antispam.js, filters.js, antiraid.js
   lib/
-    config.js         # .env beolvasás
-    db.js             # fájl alapú JSON kredit-adatbázis (data/credits.json)
-    format.js         # formázó segédfunkciók
-    loadCommands.js   # parancsbetöltő
-    selftest.js       # önellenőrzés
+    db.js               # SQLite (better-sqlite3): séma, lekérdezések, tranzakciók
+    config.js           # .env beolvasás és ellenőrzés
+    modlog.js           # moderációs napló (DB + log csatorna embed)
+    modutil.js          # jogosultság- és hierarchia-ellenőrzés
+    cooldowns.js, format.js, branding.js, loadCommands.js, selftest.js
+  web/
+    server.js           # Express, helmet, rate limit, session, CSRF
+    discordOAuth.js     # OAuth2 bejelentkezés, meghívó link
+    sessionStore.js     # express-session tároló SQLite-ban
+    middleware.js       # requireLogin, requireGuildAccess, csrf
+    routes/             # auth, public, dashboard
+    views/              # EJS sablonok
+    public/style.css
+data/meteor.sqlite      # adatbázis (gitignore-ban)
 ```
 
-Új parancs: hozz létre egy fájlt a `src/commands/` mappában `data` (SlashCommandBuilder) és `execute(interaction)` exporttal, majd futtasd az `npm run deploy` parancsot.
+**Új parancs:** hozz létre egy fájlt a megfelelő `src/commands/<kategória>/` mappában `data` (SlashCommandBuilder), `execute(interaction)` és opcionális `cooldown` (mp) / `autocomplete` exporttal, majd `npm run deploy`.
 
 ## Futtatás állandóan
-
-Hosztolható bármilyen Node.js-t támogató gépen vagy szolgáltatón (Railway, Render, VPS, Raspberry Pi). Példa `pm2`-vel:
 ```bash
 npm i -g pm2
 pm2 start src/index.js --name meteor-bot
+pm2 save
 ```
+Railway/Render/VPS mind működik; a `data/` mappa legyen perzisztens kötet, mert ott az adatbázis.
